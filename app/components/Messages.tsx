@@ -7,7 +7,7 @@ type Props = {
   loading: boolean;
   scores: ClusterScore[];
   stage: Stage;
-  scrollRef: React.RefObject<HTMLDivElement>;
+  scrollRef: React.RefObject<HTMLDivElement | null>;
 };
 
 export default function Messages({ messages, loading, scores, stage, scrollRef }: Props) {
