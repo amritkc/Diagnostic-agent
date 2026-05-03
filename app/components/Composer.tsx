@@ -43,7 +43,7 @@ export default function Composer({ input, setInput, onKey, send, loading, finish
           onClick={handleExport}
           className="w-full py-2.5 px-4 rounded-xl bg-emerald-500 text-white text-[14px] font-medium hover:bg-emerald-600 active:scale-95 transition-all duration-150 shadow-[0_2px_8px_rgba(16,185,129,0.2)]"
         >
-          📥 Export Chat as JSON
+          Export Chat as JSON
         </button>
       )}
       <div className={`group relative bg-white rounded-2xl transition-all duration-300 ${finished ? "opacity-50" : "shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.04)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)] focus-within:shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.08)]"}`}>
