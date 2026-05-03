@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
+import { Message, ClusterScore } from "@/lib/types";
+import { generateDiagnosticJSON, downloadJSON } from "@/lib/export";
 
 type Props = {
   input: string;
@@ -7,26 +9,55 @@ type Props = {
   send: () => void;
   loading: boolean;
   finished: boolean;
+  messages: Message[];
+  scores: ClusterScore[];
 };
 
-export default function Composer({ input, setInput, onKey, send, loading, finished }: Props) {
+export default function Composer({ input, setInput, onKey, send, loading, finished, messages, scores }: Props) {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Reset textarea height and focus after message is sent
+  useEffect(() => {
+    if (textareaRef.current && input === "") {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.focus();
+    }
+  }, [input]);
+
+  function handleExport() {
+    const data = generateDiagnosticJSON(messages, scores);
+    const timestamp = new Date().toISOString().split("T")[0];
+    downloadJSON(data, `diagnostic-${timestamp}.json`);
+  }
+
+  function resizeTextarea(e: React.FormEvent<HTMLTextAreaElement>) {
+    const t = e.currentTarget;
+    t.style.height = "auto";
+    t.style.height = Math.min(t.scrollHeight, 128) + "px";
+  }
+
   return (
-    <div className="pb-6 pt-3">
+    <div className="pb-6 pt-3 space-y-3">
+      {finished && (
+        <button
+          onClick={handleExport}
+          className="w-full py-2.5 px-4 rounded-xl bg-emerald-500 text-white text-[14px] font-medium hover:bg-emerald-600 active:scale-95 transition-all duration-150 shadow-[0_2px_8px_rgba(16,185,129,0.2)]"
+        >
+          📥 Export Chat as JSON
+        </button>
+      )}
       <div className={`group relative bg-white rounded-2xl transition-all duration-300 ${finished ? "opacity-50" : "shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.04)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)] focus-within:shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.08)]"}`}>
         <div className="flex items-end gap-2 p-2">
           <textarea
+            ref={textareaRef}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={onKey}
+            onInput={resizeTextarea}
             disabled={loading || finished}
             rows={1}
             placeholder={finished ? "Diagnostic complete" : "Type a message…"}
             className="flex-1 resize-none bg-transparent px-3 py-2.5 text-[15px] leading-relaxed text-neutral-900 placeholder:text-neutral-400 focus:outline-none disabled:cursor-not-allowed max-h-32"
-            onInput={(e) => {
-              const t = e.currentTarget;
-              t.style.height = "auto";
-              t.style.height = Math.min(t.scrollHeight, 128) + "px";
-            }}
           />
           <button
             onClick={send}

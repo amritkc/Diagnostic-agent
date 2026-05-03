@@ -82,7 +82,7 @@ export default function Home() {
       <div className="relative max-w-2xl mx-auto px-6 flex flex-col h-screen">
         <Header step={step} />
         <Messages messages={messages} loading={loading} scores={scores} stage={stage} scrollRef={scrollRef} />
-        <Composer input={input} setInput={setInput} onKey={onKey} send={send} loading={loading} finished={finished} />
+        <Composer input={input} setInput={setInput} onKey={onKey} send={send} loading={loading} finished={finished} messages={messages} scores={scores} />
       </div>
     </main>
   );
